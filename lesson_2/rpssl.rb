@@ -39,11 +39,27 @@ def full_answer(answer)
   end
 end
 
-# def prompt_user_choice
-#   loop do
-#     prompt(choose_prompt)
+def prompt_user_choice
+  choice = ""
+  loop do
+    prompt(CHOOSE_PROMPT)
+    choice = gets.chomp.downcase
+    if VALID_CHOICES.flatten.include?(choice)
+      break
+    else
+      prompt("That's not a valid choice.")
+    end
+  end
+  choice
+end
 
-choose_prompt = <<-MSG
+def play_again?
+  prompt("Do you want to play again? (Y/N)")
+  answer = gets.chomp
+  answer.downcase.start_with?("y")
+end
+
+CHOOSE_PROMPT = <<-MSG
   Choose one: #{VALID_CHOICES.keys.join(', ')}
   r = rock
   p = paper
@@ -63,7 +79,6 @@ intro = <<-MSG
   Spock smashes Scissors and vaporizes Rock.
 MSG
 
-choice = ""
 player_score = 0
 computer_score = 0
 
@@ -71,15 +86,7 @@ prompt(intro)
 
 loop do
   loop do
-    loop do
-      prompt(choose_prompt)
-      choice = gets.chomp.downcase
-      if VALID_CHOICES.flatten.include?(choice)
-        break
-      else
-        prompt("That's not a valid choice.")
-      end
-    end
+    choice = prompt_user_choice
 
     computer_choice = VALID_CHOICES.keys.sample
 
@@ -105,9 +112,7 @@ loop do
     prompt("Sorry! The computer is the grand winner. Better luck next time.")
   end
 
-  prompt("Do you want to play again? (Y/N)")
-  answer = gets.chomp
-  break unless answer.downcase.start_with?("y")
+  break unless play_again?
   player_score = 0
   computer_score = 0
 end
