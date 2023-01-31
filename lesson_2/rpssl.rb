@@ -14,14 +14,14 @@ def prompt(message)
   puts "=> #{message}"
 end
 
-def winning_conditions(first, second)
+def wins_against?(first, second)
   WINNING_MOVES[first].include?(second)
 end
 
 def display_results(player, computer)
-  if winning_conditions(player, computer)
+  if wins_against?(player, computer)
     "You won!"
-  elsif winning_conditions(computer, player)
+  elsif wins_against?(computer, player)
     "Computer won!"
   else
     "It's a tie!"
@@ -39,6 +39,10 @@ def full_answer(answer)
   end
 end
 
+# def prompt_user_choice
+#   loop do
+#     prompt(choose_prompt)
+
 choose_prompt = <<-MSG
   Choose one: #{VALID_CHOICES.keys.join(', ')}
   r = rock
@@ -48,15 +52,28 @@ choose_prompt = <<-MSG
   sp = spock
 MSG
 
+intro = <<-MSG
+  Welcome to Rock, Paper, Scissors, Lizard, Spock!
+  First to win 3 games wins the match.
+  How to Play:
+  Rock smashes Scissors and crushes Lizard.
+  Paper covers Rock and disproves Spock.
+  Scissors cuts Paper and decapitates Lizard.
+  Lizard eats Paper and poisons Spock.
+  Spock smashes Scissors and vaporizes Rock.
+MSG
+
 choice = ""
 player_score = 0
 computer_score = 0
+
+prompt(intro)
 
 loop do
   loop do
     loop do
       prompt(choose_prompt)
-      choice = gets.chomp
+      choice = gets.chomp.downcase
       if VALID_CHOICES.flatten.include?(choice)
         break
       else
@@ -71,9 +88,9 @@ loop do
 
     prompt(display_results(full_answer(choice), computer_choice))
 
-    if winning_conditions(full_answer(choice), computer_choice)
+    if wins_against?(full_answer(choice), computer_choice)
       player_score += 1
-    elsif winning_conditions(computer_choice, full_answer(choice))
+    elsif wins_against?(computer_choice, full_answer(choice))
       computer_score += 1
     end
 
